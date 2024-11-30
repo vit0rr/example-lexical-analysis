@@ -1,7 +1,7 @@
 import gleeunit
 import gleeunit/should
-import lexer
-import token
+import lexer/lexer
+import lexer/token
 
 pub fn main() {
   gleeunit.main()
@@ -15,9 +15,21 @@ pub fn read_char_test() {
   let updated_lexer = lexer.read_char(initial_lexer)
 
   initial_lexer
-  |> should.equal(lexer.Lexer("abc", 0, 1, "a"))
+  |> should.equal(lexer.Lexer(
+    input: "abc",
+    position: 0,
+    read_position: 1,
+    ch: "a",
+    literal: "",
+  ))
   updated_lexer
-  |> should.equal(lexer.Lexer("abc", 1, 2, "b"))
+  |> should.equal(lexer.Lexer(
+    input: "abc",
+    position: 1,
+    read_position: 2,
+    ch: "b",
+    literal: "a",
+  ))
 }
 
 pub fn skip_whitespace_test() {
@@ -28,9 +40,9 @@ pub fn skip_whitespace_test() {
   let updated_lexer = lexer.skip_whitespace(initial_lexer)
 
   initial_lexer
-  |> should.equal(lexer.Lexer("  abc", 0, 1, " "))
+  |> should.equal(lexer.Lexer("  abc", 0, 1, " ", ""))
   updated_lexer
-  |> should.equal(lexer.Lexer("  abc", 2, 3, "a"))
+  |> should.equal(lexer.Lexer("  abc", 2, 3, "a", "  "))
 }
 
 pub fn read_type_test() {
@@ -40,10 +52,10 @@ pub fn read_type_test() {
   let #(updated_lexer, result) = lexer.read_type(lexer.is_letter, initial_lexer)
 
   initial_lexer
-  |> should.equal(lexer.Lexer("abc123 xyz", 0, 1, "a"))
+  |> should.equal(lexer.Lexer("abc123 xyz", 0, 1, "a", ""))
 
   updated_lexer
-  |> should.equal(lexer.Lexer("abc123 xyz", 3, 4, "1"))
+  |> should.equal(lexer.Lexer("abc123 xyz", 3, 4, "1", "abc"))
 
   result
   |> should.equal("abc")
@@ -59,33 +71,33 @@ pub fn tokenize_test() {
 
   let tokens = lexer.gen_tokens(input)
   let expected = [
-    token.Token(token.LET, "let"),
-    token.Token(token.IDENT, "five"),
-    token.Token(token.ASSIGN, "="),
-    token.Token(token.INT, "5"),
-    token.Token(token.SEMICOLON, ";"),
-    token.Token(token.LET, "let"),
-    token.Token(token.IDENT, "ten"),
-    token.Token(token.ASSIGN, "="),
-    token.Token(token.INT, "10"),
-    token.Token(token.SEMICOLON, ";"),
-    token.Token(token.LET, "let"),
-    token.Token(token.IDENT, "add"),
-    token.Token(token.ASSIGN, "="),
-    token.Token(token.FUNCTION, "fn"),
-    token.Token(token.LPAREN, "("),
-    token.Token(token.IDENT, "x"),
-    token.Token(token.COMMA, ","),
-    token.Token(token.IDENT, "y"),
-    token.Token(token.RPAREN, ")"),
-    token.Token(token.LBRACE, "{"),
-    token.Token(token.IDENT, "x"),
-    token.Token(token.PLUS, "+"),
-    token.Token(token.IDENT, "y"),
-    token.Token(token.SEMICOLON, ";"),
-    token.Token(token.RBRACE, "}"),
-    token.Token(token.SEMICOLON, ";"),
-    token.Token(token.EOF, ""),
+    token.Token(token.Let, "let"),
+    token.Token(token.Ident, "five"),
+    token.Token(token.Assign, "="),
+    token.Token(token.Int, "5"),
+    token.Token(token.Semicolon, ";"),
+    token.Token(token.Let, "let"),
+    token.Token(token.Ident, "ten"),
+    token.Token(token.Assign, "="),
+    token.Token(token.Int, "10"),
+    token.Token(token.Semicolon, ";"),
+    token.Token(token.Let, "let"),
+    token.Token(token.Ident, "add"),
+    token.Token(token.Assign, "="),
+    token.Token(token.Function, "fn"),
+    token.Token(token.LParen, "("),
+    token.Token(token.Ident, "x"),
+    token.Token(token.Comma, ","),
+    token.Token(token.Ident, "y"),
+    token.Token(token.RParen, ")"),
+    token.Token(token.LBrace, "{"),
+    token.Token(token.Ident, "x"),
+    token.Token(token.Plus, "+"),
+    token.Token(token.Ident, "y"),
+    token.Token(token.Semicolon, ";"),
+    token.Token(token.RBrace, "}"),
+    token.Token(token.Semicolon, ";"),
+    token.Token(token.Eof, ""),
   ]
 
   tokens
@@ -97,15 +109,15 @@ pub fn tokenize_operators_test() {
 
   let tokens = lexer.gen_tokens(input)
   let expected = [
-    token.Token(token.ASSIGN, "="),
-    token.Token(token.PLUS, "+"),
-    token.Token(token.LPAREN, "("),
-    token.Token(token.RPAREN, ")"),
-    token.Token(token.LBRACE, "{"),
-    token.Token(token.RBRACE, "}"),
-    token.Token(token.COMMA, ","),
-    token.Token(token.SEMICOLON, ";"),
-    token.Token(token.EOF, ""),
+    token.Token(token.Assign, "="),
+    token.Token(token.Plus, "+"),
+    token.Token(token.LParen, "("),
+    token.Token(token.RParen, ")"),
+    token.Token(token.LBrace, "{"),
+    token.Token(token.RBrace, "}"),
+    token.Token(token.Comma, ","),
+    token.Token(token.Semicolon, ";"),
+    token.Token(token.Eof, ""),
   ]
 
   tokens
@@ -117,14 +129,14 @@ pub fn tokenize_keywords_test() {
 
   let tokens = lexer.gen_tokens(input)
   let expected = [
-    token.Token(token.FUNCTION, "fn"),
-    token.Token(token.LET, "let"),
-    token.Token(token.TRUE, "true"),
-    token.Token(token.FALSE, "false"),
-    token.Token(token.IF, "if"),
-    token.Token(token.ELSE, "else"),
-    token.Token(token.RETURN, "return"),
-    token.Token(token.EOF, ""),
+    token.Token(token.Function, "fn"),
+    token.Token(token.Let, "let"),
+    token.Token(token.True, "true"),
+    token.Token(token.False, "false"),
+    token.Token(token.If, "if"),
+    token.Token(token.Else, "else"),
+    token.Token(token.Return, "return"),
+    token.Token(token.Eof, ""),
   ]
 
   tokens
