@@ -1,24 +1,17 @@
-# example_lexical_analysis
+# Lexical Analysis in Gleam ⭐️ 
 
-[![Package Version](https://img.shields.io/hexpm/v/example_lexical_analysis)](https://hex.pm/packages/example_lexical_analysis)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/example_lexical_analysis/)
+The [lexical analysis](https://en.wikipedia.org/wiki/Lexical_analysis) is one of the steps to build an interpreter. It will be used to tokenize the input string into a list of tokens, which could be used to build the AST (Abstract Syntax Tree). 
 
-```sh
-gleam add example_lexical_analysis@1
-```
-```gleam
-import example_lexical_analysis
+### How to run
 
-pub fn main() {
-  // TODO: An example of the project in use
-}
-```
-
-Further documentation can be found at <https://hexdocs.pm/example_lexical_analysis>.
-
-## Development
+The main file contains an example tokenizing a simple string and printing the tokens to the console. To run, use the following command:
 
 ```sh
-gleam run   # Run the project
-gleam test  # Run the tests
+gleam run
+```
+
+To explore more cases and longer strings, you can check and run the tests:
+
+```sh
+gleam test
 ```
