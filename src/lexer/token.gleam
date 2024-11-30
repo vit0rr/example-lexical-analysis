@@ -36,6 +36,7 @@ pub type Token {
   Token(TokenType, String)
 }
 
+/// token_to_string converts a TokenType to a string.
 pub fn token_to_string(token_type: TokenType) -> String {
   case token_type {
     Illegal -> "ILLEGAL"
@@ -68,6 +69,7 @@ pub fn token_to_string(token_type: TokenType) -> String {
   }
 }
 
+/// lookup_ident looks up an identifier and returns the corresponding TokenType.
 pub fn lookup_ident(ident: String) -> TokenType {
   case ident {
     "fn" -> Function
@@ -79,40 +81,4 @@ pub fn lookup_ident(ident: String) -> TokenType {
     "return" -> Return
     _ -> Ident
   }
-}
-
-pub fn tokens_eq(tok_a: TokenType, tok_b: TokenType) -> Bool {
-  case tok_a {
-    Illegal -> tok_b == Illegal
-    Eof -> tok_b == Eof
-    Ident -> tok_b == Ident
-    Int -> tok_b == Int
-    Assign -> tok_b == Assign
-    Plus -> tok_b == Plus
-    Minus -> tok_b == Minus
-    Bang -> tok_b == Bang
-    Asterisk -> tok_b == Asterisk
-    Slash -> tok_b == Slash
-    Lt -> tok_b == Lt
-    Gt -> tok_b == Gt
-    Comma -> tok_b == Comma
-    Semicolon -> tok_b == Semicolon
-    LParen -> tok_b == LParen
-    RParen -> tok_b == RParen
-    LBrace -> tok_b == LBrace
-    RBrace -> tok_b == RBrace
-    Function -> tok_b == Function
-    Let -> tok_b == Let
-    True -> tok_b == True
-    False -> tok_b == False
-    If -> tok_b == If
-    Else -> tok_b == Else
-    Return -> tok_b == Return
-    Eq -> tok_b == Eq
-    NotEq -> tok_b == NotEq
-  }
-}
-
-pub fn new_token(token_type: TokenType, ch: String) -> Token {
-  Token(token_type, ch)
 }
